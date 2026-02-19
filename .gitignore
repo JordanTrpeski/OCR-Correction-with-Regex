@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+
+# Input / output folders (user data — not committed)
+input/
+output/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+nul
