@@ -34,8 +34,8 @@ echo ============================================================
 echo  API Key Setup
 echo ============================================================
 echo.
-echo  You need a free Mistral API key to use this tool.
-echo  Get one at: https://console.mistral.ai
+echo  You need an API key to use this tool.
+echo  Contact @JordanTrpeski on GitHub to request access.
 echo.
 
 :: Check if .env already has a key
