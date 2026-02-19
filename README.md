@@ -8,7 +8,7 @@ Two tools for producing clean, searchable PDFs from scanned documents using [Mis
 
 - **Python 3.10 or newer** — [python.org/downloads](https://www.python.org/downloads/)
   ⚠️ During install, tick **"Add Python to PATH"**
-- **A Mistral API key** — free at [console.mistral.ai](https://console.mistral.ai)
+- **An API key** — contact [@JordanTrpeski](https://github.com/JordanTrpeski) to get access
 
 No Node.js or anything else needed.
 
@@ -19,7 +19,7 @@ No Node.js or anything else needed.
 ```
 1. Download or clone this repo
 2. Double-click setup.bat
-3. Paste your Mistral API key when prompted
+3. Paste the API key you received when prompted
 ```
 
 That's it. `setup.bat` installs all dependencies and saves your key locally.
