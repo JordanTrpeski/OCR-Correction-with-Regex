@@ -4,49 +4,59 @@ Two tools for producing clean, searchable PDFs from scanned documents using [Mis
 
 ---
 
-## Tools
+## Requirements
 
-### `ocr_app.py` — GUI batch processor
+- **Python 3.10 or newer** — [python.org/downloads](https://www.python.org/downloads/)
+  ⚠️ During install, tick **"Add Python to PATH"**
+- **A Mistral API key** — free at [console.mistral.ai](https://console.mistral.ai)
 
-Point-and-click interface for processing multiple files at once.
+No Node.js or anything else needed.
+
+---
+
+## Setup (Windows — one time only)
+
+```
+1. Download or clone this repo
+2. Double-click setup.bat
+3. Paste your Mistral API key when prompted
+```
+
+That's it. `setup.bat` installs all dependencies and saves your key locally.
+
+---
+
+## How to use
+
+### GUI — `ocr_app.py` (batch processing, point-and-click)
 
 ```
 python ocr_app.py
 ```
 
-- Add PDFs or images via the GUI
-- Strips any existing text layer, re-OCRs with Mistral
-- Outputs a searchable PDF with invisible text overlay
+Add PDFs or images, pick an output folder, click **Process All**.
 
-### `ria.py` — CLI corrector
+### CLI — `ria.py` (single or folder, with correction layer)
 
-Command-line tool with a two-pass correction engine on top of Mistral OCR.
-
-```bash
-# Drop PDFs into input/ and run:
-python ria.py
-
-# Or point at a single file:
-python ria.py path/to/file.pdf
-python ria.py path/to/file.pdf -o corrected.pdf --md
+```
+1. Drop your PDFs into the  input\  folder
+2. Run:  python ria.py
+3. Pick up corrected PDFs from the  output\  folder
 ```
 
-**Pipeline per page:**
-1. Rasterise the page at 300 DPI (strips existing text layer)
-2. OCR with `mistral-ocr-latest`
-3. **Pass 1 — Ordered regex rules** (fixes known character confusions)
-4. **Pass 2 — Document-ID structural correction** (segment-aware O↔0 / I↔1 fixes)
-5. Assemble searchable PDF (image background + invisible text overlay)
+Or point at a single file:
+```bash
+python ria.py path\to\file.pdf
+python ria.py path\to\file.pdf -o corrected.pdf --md
+```
 
 ---
 
-## Correction rules
+## What the correction does
 
-The rule pass targets common OCR mistakes seen in engineering document IDs of the form:
+After OCR, a two-pass correction engine cleans up common mistakes in engineering document IDs (format: `26437-RIA-001-DR-CLG-PC-00001`):
 
-```
-26437-RIA-001-DR-CLG-PC-00001
-```
+**Pass 1 — ordered regex rules:**
 
 | OCR output | Corrected | Reason |
 |---|---|---|
@@ -55,37 +65,14 @@ The rule pass targets common OCR mistakes seen in engineering document IDs of th
 | `INII` / `INI` | `IN1` | |
 | `GRII` / `GRI` | `GR1` | |
 | `1N2` | `IN2` | 1 misread as I |
-| `P[I/1]E` | `PLE` | I or 1 misread as L |
+| `P[I/1]E` | `PLE` | I/1 misread as L |
 | `028` | `02B` | 8 misread as B |
 | `040` | `04C` | 0 misread as C |
 | `0P` | `OP` | O over-zeroed |
 | `0TH` | `OTH` | O over-zeroed |
 | `0002B` | `00028` | B/8 confusion |
 
-Document-ID segments that are always all-digits (project number, sequence number) additionally get O→0 and I→1 applied structurally.
+**Pass 2 — document-ID structural correction:**
+Finds IDs in the text and converts O→0 / I→1 in segments that are always all-digit (project number and sequence number).
 
----
-
-## Requirements
-
-```
-pip install mistralai pymupdf pillow
-```
-
-Python 3.10+
-
----
-
-## API key
-
-Set your Mistral API key as an environment variable:
-
-```bash
-# Windows
-set MISTRAL_API_KEY=your_key_here
-
-# macOS / Linux
-export MISTRAL_API_KEY=your_key_here
-```
-
-Get a key at [console.mistral.ai](https://console.mistral.ai).
+The terminal log shows every rule that fired, every ID corrected, and a summary of total fixes.

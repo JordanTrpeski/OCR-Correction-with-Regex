@@ -12,6 +12,14 @@ import threading
 import queue
 import time
 from pathlib import Path
+
+# ── Load .env file if present (so users don't need to set env vars manually) ──
+_env_file = Path(__file__).parent / ".env"
+if _env_file.exists():
+    for _line in _env_file.read_text().splitlines():
+        if "=" in _line and not _line.startswith("#"):
+            _k, _v = _line.split("=", 1)
+            os.environ.setdefault(_k.strip(), _v.strip().strip('"'))
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 
